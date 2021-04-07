@@ -1,142 +1,105 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Traversy Media Quick Launcher</title>
-    <link
-      href="https://fonts.googleapis.com/css?family=Open+Sans"
-      rel="stylesheet"
-      type="text/css"
-    />
-    <link
-      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-      rel="stylesheet"
-      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
-      crossorigin="anonymous"
-    />
-    <style>
-      /* Modal Structure */
+<html lang="en">
+<head>
+  <!-- NO COOKIES. WE DON'T TRACK YOU. -->
+  <meta charset="UTF-8">
+  <title>Note.ovh</title>
+  <meta name="description" content="Minimalist, secure, in-browser note taking app. Take a quick note or use quick-edit text. It uses HTML element contenteditable technology. Auto saves to localstorage.">
+  <link rel="icon" type="image/png" href="https://i.imgur.com/NZrLr3H.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-      html,
-      body {
-        font-family: "Open Sans", sans-serif;
-        font-size: 14px;
-        margin: 0;
-        min-height: 180px;
-        padding: 0;
-        width: 384px;
+  <style>
+    html {
+      height: 100%;
+    }
+
+    body {
+      font: 18px/1.5 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      margin: 0;
+      min-height: 100%;
+    }
+
+    [contenteditable] {
+      box-sizing: border-box;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    
+    [contenteditable]:focus {
+      outline: 0 solid transparent;
+    }
+
+    [contenteditable]:empty:before {
+      color: rgba(0, 0, 0, .33);
+      content: 'Click and start taking notes. Everything is autosaved into your browser.';
+      display: block;
+      font-size: 1.5rem;
+      left: 50%;
+      pointer-events: none;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+  
+  <!--
+  If you don't like this service but want something similar,
+  just copy and paste this one line to your browser:
+  data:text/html, <html contenteditable>
+  -->
+</head>
+<body>
+<div contenteditable></div>
+<script>
+  console.log('%cWelcome to contenteditable.space!',
+    'font-weight: bold; font-size: 2em;');
+  console.log('%cYou can take quick notes here which are saved automatically to localstorage.',
+    'color: gray; font-weight: bold; font-size: 2em;');
+  console.log('%cOr you can use it as a simple text editor to copy/paste -> edit -> copy/paste.',
+    'color: gray; font-weight: bold; font-size: 2em;');
+
+  var contentEditableElement = document.querySelector('[contenteditable]');
+  var localStorageKey = 'contenteditable';
+  var debounceTimeout = 1000;
+
+  function load() {
+    var saved = localStorage.getItem(localStorageKey);
+
+    if (saved) {
+      contentEditableElement.innerHTML = saved;
+      console.log('Your content just loaded from localstorage.')
+    }
+  }
+
+  function save() {
+    var html = contentEditableElement.innerHTML;
+
+    localStorage.setItem(localStorageKey, html);
+    console.log('Your content just saved to localstorage.');
+  }
+
+  function debounced(delay, fn) {
+    var timerId;
+
+    return function () {
+      if (timerId) {
+        clearTimeout(timerId);
       }
 
-      h1 {
-        font-family: "Menlo", monospace;
-        font-size: 22px;
-        font-weight: 400;
-        margin: 0;
-        color: #2f5876;
-      }
+      timerId = setTimeout(function () {
+        fn();
+        timerId = null;
+      }, delay);
+    }
+  }
 
-      a:link,
-      a:visited {
-        color: #000000;
-        outline: 0;
-        text-decoration: none;
-      }
+  var debouncedSave = debounced(debounceTimeout, save);
 
-      img {
-        width: 30px;
-      }
+  load();
 
-      .modal-header {
-        align-items: center;
-        border-bottom: 0.5px solid #dadada;
-      }
-
-      .modal-content {
-        padding: 0 22px;
-      }
-
-      .modal-icons {
-        border-top: 0.5px solid #dadada;
-        height: 50px;
-        width: 100%;
-      }
-
-      .logo {
-        padding: 16px;
-      }
-
-      .logo-icon {
-        vertical-align: text-bottom;
-        margin-right: 12px;
-      }
-
-      .version {
-        color: #444;
-        font-size: 18px;
-      }
-
-      .flex-container {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px 22px;
-      }
-
-      .flex {
-        opacity: 1;
-        transition: opacity 0.2s ease-in-out;
-        width: 120px;
-      }
-
-      .flex:hover {
-        opacity: 0.4;
-      }
-
-      .flex .fa {
-        font-size: 40px;
-        color: #2f5876;
-      }
-    </style>
-    <script src="popup.js"></script>
-  </head>
-
-  <body>
-    <div class="modal-header">
-      <h1 class="logo">
-        <img class="logo-icon" src="images/traversy-logo.png" />Traversy
-        Launcher
-        <span class="version">(1.0.0)</span>
-      </h1>
-    </div>
-    <div class="modal-content">
-      <p>Easily Access Traversy Media content</p>
-    </div>
-    <div class="modal-icons">
-      <div class="flex-container">
-        <div class="flex">
-          <a href="https://www.traversymedia.com" target="_blank">
-            <i class="fa fa-globe" style="color:darksalmon "></i>
-          </a>
-        </div>
-        <div class="flex">
-          <a href="https://www.youtube.com/traversymedia" target="_blank">
-            <i class="fa fa-youtube" style="color:darksalmon "></i>
-          </a>
-        </div>
-        <div class="flex">
-          <a href="https://www.twitter.com/traversymedia" target="_blank">
-            <i class="fa fa-twitter" style="color:darksalmon "></i>
-          </a>
-        </div>
-        <div class="flex">
-          <a href="https://www.facebook.com/traversymedia" target="_blank">
-            <i class="fa fa-facebook" style="color:darksalmon "></i>
-          </a>
-        </div>
-        <div class="flex">
-          <a href="https://www.github.com/bradtraversy" target="_blank">
-            <i class="fa fa-github" style="color:darksalmon "></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </body>
+  contentEditableElement.addEventListener('input', function() {
+    debouncedSave();
+  }, false);
+</script>
+</body>
 </html>
