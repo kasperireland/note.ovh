@@ -4,10 +4,14 @@
   "name": "Note.ovh",
   "description": "Take notes quick.",
   "version": "1.0.0",
-  "icons": { "128": "https://swivro.net/discover/wp-content/uploads/2020/08/cropped-cropped-cropped-swivrosingleS-3-3.png" },
+  "icons": { "128": "icon.png" },
   "browser_action": {
-    "default_icon": "https://swivro.net/discover/wp-content/uploads/2020/08/cropped-cropped-cropped-swivrosingleS-3-3.png",
-    "default_popup": "popup.html"
+    "default_icon": "icon.png"
   },
-  "permissions": ["activeTab"]
+  "permissions": ["activeTab"],
+  
+  "background": {
+ 	 "scripts": ["background.js"],
+ 	 "persistent": false
+  }
 }
